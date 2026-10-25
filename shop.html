@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merchy — Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+:root{--bg:#0c0b10;--bg2:#15131c;--card:#1b1924;--line:#2c2938;--ink:#f4f2ff;--mute:#a29db5;--lime:#d4ff3a;--violet:#7b5cff;--pink:#ff5ca8;--cyan:#3ae0ff;--r:22px;
+--font:'IBM Plex Sans Thai',system-ui,sans-serif;--disp:'Bricolage Grotesque','IBM Plex Sans Thai',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.55}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+h1,h2,h3{font-family:var(--disp);letter-spacing:-.02em;line-height:1.05}
+.nav{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:22px;padding:14px 5vw;background:rgba(12,11,16,.75);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{font-family:var(--disp);font-weight:800;font-size:1.55rem;letter-spacing:-.04em}.logo b{color:var(--lime)}
+.nav nav{display:flex;gap:20px;margin-left:auto;color:var(--mute);font-size:.92rem}
+.nav nav a{color:inherit;text-decoration:none}.nav nav a:hover{color:var(--ink)}
+.cartbtn{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);font-size:.9rem}
+.cartbtn span{background:var(--lime);color:#111;border-radius:999px;padding:0 8px;font-weight:700}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(320px,.9fr) 1.3fr;gap:28px;padding:36px 5vw 24px;min-height:calc(100vh - 66px);align-items:stretch}
+.info{display:flex;flex-direction:column;gap:18px;padding:8px 0}
+.eyebrow{display:inline-flex;align-self:flex-start;padding:5px 12px;border-radius:999px;font-size:.8rem;font-weight:700;color:#111;background:var(--lime)}
+.info h1{font-size:clamp(2.2rem,4.4vw,3.8rem);font-weight:800}
+.price{display:flex;align-items:baseline;gap:12px;font-family:var(--disp)}
+.price b{font-size:2.4rem;color:var(--lime)}
+.price s{color:var(--mute);font-size:1.1rem}
+.price small{font-family:var(--font);color:var(--mute);font-size:.9rem}
+.desc{color:var(--mute);max-width:46ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line);font-size:.82rem;color:var(--mute)}
+.contents{display:grid;gap:6px;padding:14px 16px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-size:.9rem}
+.contents div{display:flex;justify-content:space-between;color:var(--mute)}
+.contents div b{color:var(--ink);font-weight:500}
+.label{font-size:.82rem;color:var(--mute);margin-bottom:8px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:32px;height:32px;border-radius:50%;border:2px solid var(--line)}
+.sw.on{outline:2px solid var(--lime);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.text{flex:1;min-width:160px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg2)}
+.text:focus{outline:none;border-color:var(--lime)}
+.upload{padding:11px 14px;border-radius:12px;border:1.5px dashed var(--line);cursor:pointer;font-size:.9rem;white-space:nowrap}
+.upload:hover{border-color:var(--lime);color:var(--lime)}.upload input{display:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:999px;background:var(--lime);color:#111;font-weight:700;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.added{background:var(--violet);color:#fff}
+
+.stage{position:relative;border-radius:28px;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#2c2545 0%,#121019 72%);border:1px solid var(--line);min-height:520px}
+#hero3d{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#hero3d:active{cursor:grabbing}
+.stage .badge{position:absolute;top:18px;left:18px;padding:8px 14px;border-radius:999px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);font-family:var(--disp);font-weight:700;font-size:.95rem}
+.stage .hint{position:absolute;top:22px;right:20px;color:var(--mute);font-size:.8rem}
+.navbtn{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid var(--line);font-size:1.2rem;backdrop-filter:blur(6px)}
+.navbtn:hover{border-color:var(--lime);color:var(--lime)}
+.prev{left:16px}.next{right:16px}
+.strip{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--lime);width:22px;border-radius:6px}
+.stage-fallback{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute)}
+.stage-fallback[hidden]{display:none}
+
+/* catalog */
+.catalog{padding:56px 5vw 120px;background:var(--bg2);border-top:1px solid var(--line)}
+.cat-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.cat-head h2{font-size:clamp(1.8rem,3.4vw,2.6rem)}
+.cat-head p{color:var(--mute)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filter{padding:8px 16px;border-radius:999px;border:1px solid var(--line);font-size:.88rem}
+.filter.on{background:var(--ink);color:#111;border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{position:relative;display:flex;flex-direction:column;border-radius:20px;background:var(--card);border:1px solid var(--line);overflow:hidden;text-align:left;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-4px);border-color:#4a4560}
+.card.on{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.thumb{aspect-ratio:1/1;background:radial-gradient(ellipse at 50% 40%,#2a2440,#141219 75%);display:grid;place-items:center}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb .ph{color:var(--mute);font-size:.8rem}
+.card .meta{padding:14px 16px 16px;display:grid;gap:4px}
+.card .kind{font-size:.72rem;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.card h3{font-family:var(--font);font-weight:700;font-size:1rem;letter-spacing:0}
+.card .p{display:flex;justify-content:space-between;align-items:center;font-family:var(--disp);font-weight:700;color:var(--lime)}
+.card .tag{position:absolute;top:10px;left:10px;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;color:#111}
+.add{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);color:var(--ink);font-family:var(--font);font-size:1rem;line-height:1}
+.add.in{background:var(--lime);color:#111;border-color:var(--lime)}
+
+/* my box bar */
+.bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:16px;padding:10px 10px 10px 20px;border-radius:999px;background:rgba(27,25,36,.92);backdrop-filter:blur(14px);border:1px solid var(--line);box-shadow:0 20px 50px -20px #000;max-width:calc(100vw - 24px)}
+.bar .t{font-size:.88rem;color:var(--mute);white-space:nowrap}
+.bar .t b{color:var(--ink);font-family:var(--disp);font-size:1.15rem}
+.bar .warn{color:var(--pink)}
+.bar .btn{padding:10px 18px}
+.toast{position:fixed;left:50%;top:84px;transform:translate(-50%,-20px);opacity:0;transition:.3s;z-index:60;padding:12px 20px;border-radius:999px;background:var(--lime);color:#111;font-weight:700;pointer-events:none;max-width:calc(100vw - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:960px){
+  .hero{grid-template-columns:1fr;min-height:0}
+  .stage{order:-1;min-height:400px}
+  .nav nav{display:none}.cartbtn{margin-left:auto}
+}
+@media (max-width:560px){
+  .hero,.catalog{padding-left:16px;padding-right:16px}.nav{padding:12px 16px}
+  .grid{grid-template-columns:1fr 1fr;gap:10px}
+  .bar{gap:10px;padding-left:14px}.bar .t{font-size:.78rem}
+}
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="index.html" style="color:inherit;text-decoration:none">merchy<b>.</b></a>
+  <nav><a href="index.html">หน้าแรก</a><a href="#top">3D Studio</a><a href="#catalog">สินค้าทั้งหมด</a><a href="#catalog">Boxsets</a></nav>
+  <button class="cartbtn" id="openBox">กล่องของฉัน <span id="boxCount">0</span></button>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="info">
+    <span class="eyebrow" id="pKind">Boxset</span>
+    <h1 id="pName">Welcome Kit</h1>
+    <div class="price"><b id="pPrice">฿590</b><s id="pWas"></s><small id="pUnit">/เซ็ต · รวมใส่โลโก้</small></div>
+    <p class="desc" id="pDesc"></p>
+    <div class="chips" id="pChips"></div>
+    <div class="contents" id="pContents" hidden></div>
+    <div>
+      <div class="label">สีธีม</div>
+      <div class="swatches" id="swatches"></div>
+    </div>
+    <div>
+      <div class="label">โลโก้ของคุณ</div>
+      <div class="row">
+        <input class="text" id="brand" maxlength="14" placeholder="พิมพ์ชื่อแบรนด์ เช่น ACME">
+        <label class="upload">⬆ อัปโหลด<input type="file" id="logoFile" accept="image/*"></label>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn" id="primary">เพิ่มลงกล่องของฉัน</button>
+      <button class="btn ghost" id="shot">📸 บันทึกภาพ</button>
+    </div>
+  </div>
+  <div class="stage">
+    <canvas id="hero3d"></canvas>
+    <div class="badge" id="badge">Welcome Kit</div>
+    <div class="hint">ลากหมุน · scroll ซูม</div>
+    <button class="navbtn prev" id="prev" aria-label="ก่อนหน้า">‹</button>
+    <button class="navbtn next" id="next" aria-label="ถัดไป">›</button>
+    <div class="strip" id="dots"></div>
+    <div class="stage-fallback" id="fallback" hidden>กำลังโหลด 3D…</div>
+  </div>
+</section>
+
+<section class="catalog" id="catalog">
+  <div class="cat-head">
+    <div><h2>เลือกสินค้า</h2><p>คลิกเพื่อดูเป็น 3D ด้านบน · กด + เพื่อใส่ลงกล่องของฉัน</p></div>
+    <div class="filters" id="filters"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+</main>
+
+<div class="bar" id="bar">
+  <div class="t" id="barText"></div>
+  <button class="btn ghost" id="viewBox">ดูกล่อง 3D</button>
+  <button class="btn" id="checkout">สั่งเลย</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+// ---------------- catalog (ราคารวมใส่โลโก้ 1 จุด)
+const CATALOG = [
+  { id:'welcome', kind:'boxset', name:'Welcome Kit', price:590, was:661, tag:['Best seller','#d4ff3a'], desc:'เซ็ตต้อนรับพนักงานใหม่ ใช้ได้ทุกวัน ใส่โลโก้ครบทุกชิ้น', chips:['onboarding','HR','ส่งใน 5–7 วัน'], items:['box','tote','notebook','pen','tumbler'] },
+  { id:'eco', kind:'boxset', name:'Eco Set', price:650, was:716, tag:['ESG ready','#3ae0ff'], desc:'ของใช้ลดพลาสติก สำหรับบริษัทที่มีนโยบาย ESG และงาน CSR', chips:['ESG','CSR','อีเวนต์'], items:['box','tote','bottle','lunch'] },
+  { id:'exec', kind:'boxset', name:'Executive Tech', price:1190, was:1271, tag:['Premium','#ff5ca8'], desc:'แกดเจ็ตพรีเมียมสำหรับลูกค้า VIP ผู้บริหาร และของขวัญปีใหม่', chips:['VIP','ผู้บริหาร','ปีใหม่'], items:['box','powerbank','charger','notebook','pen'] },
+  { id:'box', kind:'box', name:'กล่องของขวัญแม่เหล็ก', price:149, desc:'กล่องแข็งฝาแม่เหล็ก รองกระดาษทิชชู่ ปั๊มโลโก้หน้ากล่องและบนฝา รวมค่าแพ็ก', chips:['ปั๊มฟอยล์','บังคับทุกเซ็ต'] },
+  { id:'tote', kind:'item', name:'ถุงผ้าแคนวาส', price:99, desc:'ถุงผ้าแคนวาสหนา สีธรรมชาติ หูหิ้วยาว ใส่ A4 ได้', chips:['สกรีน','ผ้าแคนวาส'] },
+  { id:'notebook', kind:'item', name:'สมุดปก PU A5', price:149, desc:'สมุดปกหนังเทียม สายรัดยางยืด กระดาษถนอมสายตา', chips:['ปั๊มนูน / UV','A5'] },
+  { id:'pen', kind:'item', name:'ปากกาโลหะ', price:45, desc:'ปากกาลูกลื่นด้ามโลหะ น้ำหนักดี เขียนลื่น', chips:['เลเซอร์','หมึกน้ำเงิน'] },
+  { id:'tumbler', kind:'item', name:'แก้วเก็บความเย็น 20oz', price:219, desc:'แก้วสแตนเลส 2 ชั้น เก็บเย็นนาน พร้อมฝาและหลอด', chips:['เลเซอร์','20oz'] },
+  { id:'bottle', kind:'item', name:'ขวดน้ำสแตนเลส 500ml', price:189, desc:'ขวดน้ำสแตนเลสฝาไม้ไผ่ พกพาง่าย ลดขวดพลาสติก', chips:['เลเซอร์','500ml','ESG'] },
+  { id:'lunch', kind:'item', name:'กล่องข้าวไม้ไผ่', price:279, desc:'กล่องข้าวฝาไม้ไผ่ พร้อมสายรัด เข้าไมโครเวฟได้ (ไม่รวมฝา)', chips:['เลเซอร์','ESG'] },
+  { id:'powerbank', kind:'item', name:'Power bank 10,000mAh', price:579, desc:'แบตสำรองบางเบา ชาร์จเร็ว USB-C มีไฟบอกสถานะ', chips:['UV print','USB-C'] },
+  { id:'charger', kind:'item', name:'แท่นชาร์จไร้สายไม้ไผ่', price:349, desc:'แท่นชาร์จไร้สายฐานไม้ไผ่ วางโทรศัพท์ก็ชาร์จได้', chips:['เลเซอร์','ไม้ไผ่'] },
+];
+const BY = Object.fromEntries(CATALOG.map(p => [p.id, p]));
+const KIND = { boxset:'Boxset', box:'กล่อง', item:'สินค้าเดี่ยว', mybox:'กล่องของฉัน' };
+const BOX_FEE = 149, MIN_ITEMS = 3;
+const COLORS = ['#7b5cff','#111114','#f2f0ea','#d4ff3a','#ff5ca8','#1f3a68','#8fb59a'];
+const baht = n => '฿' + Math.round(n).toLocaleString('en-US');
+const $ = s => document.querySelector(s);
+const state = { sel:'welcome', color:COLORS[0], text:'', mine:[] };
+const toast = m => { const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toast.h); toast.h=setTimeout(()=>t.classList.remove('show'),2200); };
+
+// ---------------- shared 3D kit (builders + logo + materials)
+function makeKit() {
+  // ---------- logo texture (shared)
+  const logoCanvas = document.createElement('canvas');
+  logoCanvas.width = logoCanvas.height = 512;
+  const lctx = logoCanvas.getContext('2d');
+  const logoTex = new THREE.CanvasTexture(logoCanvas);
+  logoTex.colorSpace = THREE.SRGBColorSpace;
+  logoTex.anisotropy = 8;
+  const logoMat = new THREE.MeshStandardMaterial({
+    map: logoTex, transparent: true, roughness: 0.5, depthWrite: false,
+    polygonOffset: true, polygonOffsetFactor: -4,
+  });
+  let logoState = { img: null, text: 'YOUR LOGO' };
+
+  function drawLogo(theme) {
+    lctx.clearRect(0, 0, 512, 512);
+    if (logoState.img) {
+      const img = logoState.img;
+      const s = Math.min(440 / img.width, 440 / img.height);
+      const w = img.width * s, h = img.height * s;
+      lctx.drawImage(img, (512 - w) / 2, (512 - h) / 2, w, h);
+    } else {
+      const text = (logoState.text || 'YOUR LOGO').toUpperCase();
+      const words = text.split(' ').length > 1 && text.length > 8 ? text.split(' ') : [text];
+      const light = contrastInk(theme) === '#111114';
+      lctx.fillStyle = light ? '#111114' : '#d4ff3a';
+      lctx.strokeStyle = light ? '#ffffff' : '#111114';
+      lctx.lineJoin = 'round'; lctx.textAlign = 'center'; lctx.textBaseline = 'middle';
+      let size = Math.min(170, 900 / Math.max(...words.map(w => w.length)));
+      lctx.font = `800 ${size}px "Bricolage Grotesque", "IBM Plex Sans Thai", sans-serif`;
+      const lh = size * 0.95, y0 = 256 - (words.length - 1) * lh / 2;
+      lctx.lineWidth = size * 0.12;
+      words.forEach((w, i) => { lctx.strokeText(w, 256, y0 + i * lh); lctx.fillText(w, 256, y0 + i * lh); });
+      lctx.font = `700 ${size * 0.45}px sans-serif`;
+      lctx.strokeText('✦', 256, y0 - lh * 0.85); lctx.fillText('✦', 256, y0 - lh * 0.85);
+    }
+    logoTex.needsUpdate = true;
+  }
+
+  // ---------- materials
+  const themeMats = []; // materials that follow theme color
+  const themed = (opts = {}) => { const m = new THREE.MeshStandardMaterial({ roughness: 0.45, metalness: 0.15, ...opts }); themeMats.push(m); return m; };
+  const mat = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.6, ...o });
+  const canvasMat = mat(0xe9e1cf, { roughness: 0.95 });
+  const woodMat = mat(0xc89b64, { roughness: 0.75 });
+  const steelMat = mat(0xcfd3da, { metalness: 0.9, roughness: 0.25 });
+  const darkMat = mat(0x18171d, { roughness: 0.4 });
+
+  const shadowAll = (g) => g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  const plane = (w, h) => new THREE.Mesh(new THREE.PlaneGeometry(w, h), logoMat);
+  const wrapLogo = (rb, rt, h, arc = 1.3) => new THREE.Mesh(
+    new THREE.CylinderGeometry(rt, rb, h, 32, 1, true, -arc / 2, arc), logoMat);
+
+  // ---------- item builders (หน่วยประมาณ 1 = 15 ซม.)
+  const B = {
+    giftBox() {
+      const g = new THREE.Group(), m = themed();
+      const W = 2.8, D = 1.5, H = 0.55, t = 0.05;
+      const add = (geo, x, y, z) => { const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); g.add(me); };
+      add(new THREE.BoxGeometry(W, t, D), 0, t / 2, 0);
+      add(new THREE.BoxGeometry(W, H, t), 0, H / 2, D / 2 - t / 2);
+      add(new THREE.BoxGeometry(W, H, t), 0, H / 2, -D / 2 + t / 2);
+      add(new THREE.BoxGeometry(t, H, D), W / 2 - t / 2, H / 2, 0);
+      add(new THREE.BoxGeometry(t, H, D), -W / 2 + t / 2, H / 2, 0);
+      // tissue paper
+      const tissue = new THREE.Mesh(new THREE.BoxGeometry(W - 0.12, 0.04, D - 0.12), mat(0xf6f4ef, { roughness: 1 }));
+      tissue.position.y = H * 0.55; g.add(tissue);
+      // lid leaning behind
+      const lid = new THREE.Group();
+      const top = new THREE.Mesh(new THREE.BoxGeometry(W + 0.06, D + 0.06, 0.06), m);
+      lid.add(top);
+      const lg = plane(1.1, 1.1); lg.position.z = 0.035; lid.add(lg);
+      lid.position.set(0, D / 2 + 0.05, -D / 2 - 0.25); lid.rotation.x = -0.32;
+      g.add(lid);
+      // front logo
+      const fl = plane(0.5, 0.5); fl.position.set(0, H / 2, D / 2 + 0.002); g.add(fl);
+      return g;
+    },
+    tumbler() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.26, 1.25, 48), themed({ metalness: 0.35, roughness: 0.35 }));
+      body.position.y = 0.625; g.add(body);
+      const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.355, 0.35, 0.12, 48), darkMat);
+      lid.position.y = 1.31; g.add(lid);
+      const rimM = new THREE.Mesh(new THREE.CylinderGeometry(0.345, 0.345, 0.05, 48), steelMat);
+      rimM.position.y = 1.235; g.add(rimM);
+      const straw = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.6, 12), darkMat);
+      straw.position.set(0.08, 1.6, 0); straw.rotation.z = -0.12; g.add(straw);
+      // radius at y: 0.26 + y/1.25*0.08 ; logo from y .4 to .9
+      const lg = wrapLogo((0.26 + 0.4 / 1.25 * 0.08) * 1.012, (0.26 + 0.9 / 1.25 * 0.08) * 1.012, 0.5);
+      lg.position.y = 0.65; g.add(lg);
+      return g;
+    },
+    bottle() {
+      const g = new THREE.Group();
+      const pts = [[0, 0], [0.26, 0], [0.28, 0.04], [0.28, 1.05], [0.2, 1.25], [0.13, 1.33], [0.13, 1.42], [0, 1.42]].map(p => new THREE.Vector2(p[0], p[1]));
+      const body = new THREE.Mesh(new THREE.LatheGeometry(pts, 56), themed({ metalness: 0.4, roughness: 0.3 }));
+      g.add(body);
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.2, 32), woodMat);
+      cap.position.y = 1.5; g.add(cap);
+      const lg = wrapLogo(0.284, 0.284, 0.48); lg.position.y = 0.55; g.add(lg);
+      return g;
+    },
+    tote() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new RoundedBoxGeometry(1.15, 1.25, 0.08, 2, 0.03), canvasMat);
+      body.position.y = 0.625; g.add(body);
+      for (const z of [0.04, -0.04]) {
+        const h = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.025, 8, 32, Math.PI), canvasMat);
+        h.position.set(0, 1.25, z); g.add(h);
+      }
+      const lg = plane(0.7, 0.7); lg.position.set(0, 0.6, 0.042); g.add(lg);
+      return g;
+    },
+    notebook() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new RoundedBoxGeometry(0.8, 1.1, 0.13, 3, 0.03), themed({ roughness: 0.7 }));
+      g.add(body);
+      const pages = new THREE.Mesh(new THREE.BoxGeometry(0.76, 1.06, 0.1), mat(0xf7f3e8));
+      pages.position.x = 0.03; g.add(pages);
+      const band = new THREE.Mesh(new THREE.BoxGeometry(0.035, 1.112, 0.142), darkMat);
+      band.position.x = 0.3; g.add(band);
+      const lg = plane(0.42, 0.42); lg.position.set(-0.04, 0.12, 0.068); g.add(lg);
+      // stand leaning
+      g.rotation.x = -0.2; g.position.y = 0.55;
+      const w = new THREE.Group(); w.add(g); return w;
+    },
+    pen() {
+      const g = new THREE.Group();
+      const b = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.85, 20), steelMat);
+      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.1, 20), steelMat); tip.position.y = -0.475;
+      const clip = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.3, 0.02), darkMat); clip.position.set(0, 0.25, 0.045);
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.037, 0.037, 0.3, 20), themed()); cap.position.y = 0.28;
+      g.add(b, tip, clip, cap);
+      g.rotation.z = Math.PI / 2; g.position.y = 0.04;
+      const w = new THREE.Group(); w.add(g); return w;
+    },
+    lunch() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new RoundedBoxGeometry(1.0, 0.38, 0.65, 3, 0.06), mat(0xf4f1ea, { roughness: 0.5 }));
+      body.position.y = 0.19; g.add(body);
+      const lid = new THREE.Mesh(new RoundedBoxGeometry(1.02, 0.08, 0.67, 3, 0.03), woodMat);
+      lid.position.y = 0.42; g.add(lid);
+      const strap = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.5, 0.69), themed()); strap.position.set(0.3, 0.23, 0); g.add(strap);
+      const lg = plane(0.36, 0.36); lg.rotation.x = -Math.PI / 2; lg.position.set(-0.12, 0.462, 0); g.add(lg);
+      return g;
+    },
+    powerbank() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new RoundedBoxGeometry(0.5, 0.9, 0.15, 4, 0.06), themed({ roughness: 0.3, metalness: 0.2 }));
+      body.position.y = 0.45; g.add(body);
+      const led = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.015, 0.01), new THREE.MeshBasicMaterial({ color: 0x3ae0ff }));
+      led.position.set(0, 0.12, 0.077); g.add(led);
+      const lg = plane(0.34, 0.34); lg.position.set(0, 0.52, 0.077); g.add(lg);
+      g.rotation.x = -0.12;
+      return g;
+    },
+    charger() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.44, 0.08, 64), woodMat);
+      body.position.y = 0.04; g.add(body);
+      const pad = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.01, 64), darkMat); pad.position.y = 0.085; g.add(pad);
+      const lg = plane(0.42, 0.42); lg.rotation.x = -Math.PI / 2; lg.position.y = 0.092; g.add(lg);
+      return g;
+    },
+  };
+
+  // [builder, x, z, rotY]
+  const LAYOUTS = {
+    welcome: [['giftBox', 0, -0.95, 0], ['tote', -1.55, 0.35, 0.35], ['tumbler', 1.45, 0.45, -0.3], ['notebook', -0.3, 0.75, 0.1], ['pen', 0.55, 1.15, 0.3]],
+    eco: [['giftBox', 0, -0.95, 0], ['tote', -1.55, 0.35, 0.35], ['bottle', 1.4, 0.35, -0.3], ['lunch', 0.0, 0.9, 0.15]],
+    exec: [['giftBox', 0, -0.95, 0], ['powerbank', -1.3, 0.55, 0.3], ['charger', 1.35, 0.7, 0], ['notebook', -0.2, 0.75, 0.05], ['pen', 0.55, 1.35, -0.2]],
+  };
+
+  return { B, LAYOUTS, themeMats, logoMat, drawLogo, logoState, shadowAll };
+}
+function contrastInk(hex) {
+  const c = parseInt(hex.slice(1), 16), r = c >> 16, g = (c >> 8) & 255, b = c & 255;
+  return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#111114' : '#ffffff';
+}
+
+
+function makeStage(canvas, { interactive = true, preserve = false } = {}) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: preserve });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3150, 1.1));
+  const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(4, 7, 5); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024); Object.assign(key.shadow.camera, { left:-4, right:4, top:4, bottom:-4 }); key.shadow.bias = -0.0005; scene.add(key);
+  const rim = new THREE.DirectionalLight(0xb9a8ff, 1.4); rim.position.set(-5, 3, -4); scene.add(rim);
+  const fill = new THREE.PointLight(0xd4ff3a, 5, 10); fill.position.set(-3, 1.5, 3); scene.add(fill);
+  const plat = new THREE.Mesh(new THREE.CylinderGeometry(2.9, 3.0, 0.18, 96), new THREE.MeshStandardMaterial({ color:0x1d1a28, roughness:.55, metalness:.1 }));
+  plat.position.y = -0.09; plat.receiveShadow = true; scene.add(plat);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(2.95, 0.015, 8, 128), new THREE.MeshBasicMaterial({ color:0xd4ff3a }));
+  ring.rotation.x = Math.PI/2; scene.add(ring);
+  let controls = null;
+  if (interactive) {
+    controls = new OrbitControls(camera, canvas); controls.enableDamping = true;
+    controls.minDistance = 3; controls.maxDistance = 13; controls.maxPolarAngle = Math.PI * .48;
+    controls.autoRotate = true; controls.autoRotateSpeed = 1.4;
+  }
+  return { renderer, scene, camera, controls, plat, ring };
+}
+
+const kit = makeKit();
+let theme = state.color;
+function applyTheme(hex) { theme = hex; kit.themeMats.forEach(m => m.color.set(hex)); kit.drawLogo(hex); }
+
+// build a product (single item / set / my box) into a group, framed for the stage
+const SLOTS = [[-1.6,0.35,0.35],[1.45,0.45,-0.3],[-0.3,0.8,0.1],[0.55,1.25,0.3],[-1.35,1.45,0.2],[1.5,1.45,-0.2],[0.35,1.9,0],[-0.6,2.0,0.15]];
+function buildProduct(id) {
+  const g = new THREE.Group(); let layout, single = false;
+  if (id === 'mybox') layout = [['giftBox',0,-0.95,0], ...state.mine.map((k,i) => [k, ...SLOTS[i % SLOTS.length]])];
+  else if (BY[id].kind === 'boxset') layout = kit.LAYOUTS[id];
+  else { layout = [[id === 'box' ? 'giftBox' : id, 0, 0, id === 'box' ? 0 : -0.25]]; single = true; }
+  layout.forEach(([b,x,z,ry], i) => { const it = kit.B[b](); it.position.x += x; it.position.z += z; it.rotation.y += ry; it.userData.delay = i*.07; it.userData.baseY = it.position.y; kit.shadowAll(it); g.add(it); });
+  g.traverse(o => { if (o.isMesh && o.material === kit.logoMat) o.castShadow = false; });
+  // frame: scale single items up to a hero size, sets slightly down
+  const box = new THREE.Box3().setFromObject(g), size = box.getSize(new THREE.Vector3());
+  const s = single ? Math.min(2.4 / Math.max(size.y, 0.4), 3.2 / Math.max(size.x, size.z, 0.3), 3.2) : (state.mine.length > 4 && id === 'mybox' ? .85 : 1);
+  g.scale.setScalar(s);
+  if (single) { const c = box.getCenter(new THREE.Vector3()); g.position.set(-c.x*s, 0, -c.z*s); }
+  g.userData.single = single;
+  return g;
+}
+function frameCamera(cam, single, ctrl) {
+  if (single) { cam.position.set(3.6, 2.6, 5.2); if (ctrl) ctrl.target.set(0, 1.0, 0); else cam.lookAt(0, 1.0, 0); }
+  else { cam.position.set(4.9, 3.7, 7.3); if (ctrl) ctrl.target.set(0, 0.6, 0); else cam.lookAt(0, 0.6, 0); }
+}
+
+// ---------------- hero stage
+let hero = null, current = null, intro = 2;
+try {
+  hero = makeStage($('#hero3d'), { preserve: true });
+  const resize = () => { const r = $('#hero3d').getBoundingClientRect(); if (!r.width) return; hero.renderer.setSize(r.width, r.height, false); hero.camera.aspect = r.width / r.height; hero.camera.fov = r.width < 520 ? 42 : 32; hero.camera.updateProjectionMatrix(); };
+  new ResizeObserver(resize).observe($('#hero3d')); resize();
+  const clock = new THREE.Clock();
+  hero.renderer.setAnimationLoop(() => {
+    const dt = clock.getDelta();
+    if (current && intro < 1.6) { intro += dt * 1.8; current.children.forEach(it => { const p = Math.min(1, Math.max(0, (intro - it.userData.delay) / .7)), e = 1 - Math.pow(1-p, 3); it.scale.setScalar(.001 + e*.999); it.position.y = it.userData.baseY + (1-e) * .5; }); }
+    hero.controls.update(); hero.renderer.render(hero.scene, hero.camera);
+  });
+} catch (e) { console.error(e); $('#fallback').hidden = false; $('#fallback').textContent = 'เบราว์เซอร์นี้ไม่รองรับ WebGL'; }
+
+function show3D(id) {
+  if (!hero) return;
+  if (current) { hero.scene.remove(current); current.traverse(o => { if (o.isMesh) o.geometry.dispose(); }); }
+  kit.themeMats.length = 0;
+  current = buildProduct(id); hero.scene.add(current); applyTheme(theme);
+  frameCamera(hero.camera, current.userData.single, hero.controls); intro = 0;
+}
+
+// ---------------- thumbnails rendered from the same models
+async function renderThumbs() {
+  const c = document.createElement('canvas'); c.width = c.height = 360;
+  let st; try { st = makeStage(c, { interactive:false, preserve:true }); } catch { return; }
+  st.renderer.setPixelRatio(1); st.renderer.setSize(360, 360, false); st.camera.aspect = 1; st.camera.updateProjectionMatrix();
+  st.ring.visible = false;
+  const saved = kit.themeMats.slice();
+  for (const p of CATALOG) {
+    kit.themeMats.length = 0;
+    const g = buildProduct(p.id); st.scene.add(g); kit.themeMats.forEach(m => m.color.set(theme));
+    frameCamera(st.camera, g.userData.single); st.camera.position.multiplyScalar(g.userData.single ? 1.12 : .88); st.camera.lookAt(0, g.userData.single ? 1.0 : 0.6, 0);
+    st.renderer.render(st.scene, st.camera);
+    thumbs[p.id] = c.toDataURL('image/png');
+    const img = document.querySelector(`[data-thumb="${p.id}"]`); if (img) img.innerHTML = `<img alt="${p.name}" src="${thumbs[p.id]}">`;
+    st.scene.remove(g); g.traverse(o => { if (o.isMesh) o.geometry.dispose(); });
+    await new Promise(r => setTimeout(r, 0));
+  }
+  kit.themeMats.length = 0; saved.forEach(m => kit.themeMats.push(m));
+  st.renderer.dispose();
+}
+
+// ---------------- UI
+const ORDER = CATALOG.map(p => p.id);
+let filter = 'all';
+function myBoxPrice() { return BOX_FEE + state.mine.reduce((a, k) => a + BY[k].price, 0); }
+
+function renderInfo() {
+  const id = state.sel, mine = id === 'mybox', p = mine ? null : BY[id];
+  $('#pKind').textContent = mine ? 'กล่องของฉัน' : KIND[p.kind];
+  $('#pKind').style.background = mine ? '#ffffff' : (p.tag ? p.tag[1] : 'var(--lime)');
+  $('#pName').textContent = mine ? 'กล่องที่คุณจัดเอง' : p.name;
+  $('#badge').textContent = mine ? `กล่องของฉัน · ${state.mine.length} ชิ้น` : p.name;
+  $('#pPrice').textContent = baht(mine ? myBoxPrice() : p.price);
+  $('#pWas').textContent = p && p.was ? baht(p.was) : '';
+  $('#pUnit').textContent = mine || p.kind === 'boxset' ? '/เซ็ต · รวมใส่โลโก้' : '/ชิ้น · รวมใส่โลโก้';
+  $('#pDesc').textContent = mine ? `กล่องแม่เหล็ก + ${state.mine.length} ชิ้นที่คุณเลือก · ขั้นต่ำ ${MIN_ITEMS} ชิ้น · สั่งขั้นต่ำ 25 เซ็ต` : p.desc + (p.was ? ` · ถูกกว่าซื้อแยก ${Math.round((1 - p.price / p.was) * 100)}%` : '');
+  $('#pChips').innerHTML = (mine ? ['Build your own','ผลิต 8–10 วัน'] : p.chips).map(c => `<span class="chip">${c}</span>`).join('');
+  const list = mine ? ['box', ...state.mine] : (p.kind === 'boxset' ? p.items : null);
+  const box = $('#pContents'); box.hidden = !list;
+  if (list) box.innerHTML = list.map(k => `<div><b>${BY[k].name}</b><span>${baht(BY[k].price)}</span></div>`).join('');
+  const pr = $('#primary');
+  if (mine) { pr.textContent = state.mine.length >= MIN_ITEMS ? `สั่งกล่องนี้ · ${baht(myBoxPrice())}/เซ็ต` : `เลือกอีก ${MIN_ITEMS - state.mine.length} ชิ้น`; pr.classList.remove('added'); }
+  else if (p.kind === 'boxset') { pr.textContent = `สั่งเซ็ตนี้ · ${baht(p.price)}`; pr.classList.remove('added'); }
+  else if (p.kind === 'box') { pr.textContent = 'รวมอยู่ในทุกกล่องแล้ว ✓'; pr.classList.add('added'); }
+  else { const inn = state.mine.includes(id); pr.textContent = inn ? '✓ อยู่ในกล่องของฉัน (กดเพื่อเอาออก)' : '+ เพิ่มลงกล่องของฉัน'; pr.classList.toggle('added', inn); }
+  $('#dots').innerHTML = ORDER.map(k => `<span class="dot${k === id ? ' on' : ''}"></span>`).join('');
+}
+function renderBar() {
+  const n = state.mine.length;
+  $('#boxCount').textContent = n;
+  $('#barText').innerHTML = n ? `กล่องของฉัน <b>${n}</b> ชิ้น + กล่อง · <b>${baht(myBoxPrice())}</b>/เซ็ต ${n < MIN_ITEMS ? `<span class="warn">· อีก ${MIN_ITEMS - n} ชิ้น</span>` : ''}` : 'ยังไม่มีของในกล่อง — กด + ที่สินค้าเพื่อจัดเซ็ตเอง';
+  $('#viewBox').style.display = n ? '' : 'none';
+  $('#checkout').style.display = n ? '' : 'none';
+}
+function renderGrid() {
+  const list = CATALOG.filter(p => filter === 'all' || p.kind === filter);
+  $('#grid').innerHTML = list.map(p => `
+    <div class="card${p.id === state.sel ? ' on' : ''}" data-id="${p.id}" role="button" tabindex="0">
+      ${p.tag ? `<span class="tag" style="background:${p.tag[1]}">${p.tag[0]}</span>` : ''}
+      <div class="thumb" data-thumb="${p.id}">${thumbs[p.id] ? `<img alt="${p.name}" src="${thumbs[p.id]}">` : '<span class="ph">กำลังเรนเดอร์…</span>'}</div>
+      <div class="meta"><span class="kind">${KIND[p.kind]}</span><h3>${p.name}</h3>
+        <div class="p">${baht(p.price)}${p.kind === 'item' ? `<button class="add${state.mine.includes(p.id) ? ' in' : ''}" data-add="${p.id}" aria-label="เพิ่มลงกล่อง">${state.mine.includes(p.id) ? '✓' : '+'}</button>` : ''}</div>
+      </div>
+    </div>`).join('');
+}
+const thumbs = {};
+
+function select(id, scroll = false) {
+  state.sel = id; renderInfo(); renderGrid(); show3D(id);
+  if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function toggleMine(id) {
+  if (state.mine.includes(id)) { state.mine = state.mine.filter(k => k !== id); toast(`เอา${BY[id].name}ออกแล้ว`); }
+  else { if (state.mine.length >= 8) return toast('ใส่ได้สูงสุด 8 ชิ้น'); state.mine.push(id); toast(`ใส่${BY[id].name}ลงกล่องแล้ว ✨`); }
+  renderBar(); renderGrid(); renderInfo(); if (state.sel === 'mybox') show3D('mybox');
+}
+
+$('#filters').innerHTML = [['all','ทั้งหมด'],['boxset','Boxset'],['item','สินค้าเดี่ยว'],['box','กล่อง']].map(([k,l]) => `<button class="filter${k === 'all' ? ' on' : ''}" data-f="${k}">${l}</button>`).join('');
+$('#filters').onclick = e => { const b = e.target.closest('[data-f]'); if (!b) return; filter = b.dataset.f; document.querySelectorAll('.filter').forEach(x => x.classList.toggle('on', x === b)); renderGrid(); };
+$('#grid').onclick = e => { const a = e.target.closest('[data-add]'); if (a) { e.stopPropagation(); return toggleMine(a.dataset.add); } const c = e.target.closest('[data-id]'); if (c) select(c.dataset.id, true); };
+$('#grid').onkeydown = e => { if (e.key === 'Enter') { const c = e.target.closest('[data-id]'); if (c) select(c.dataset.id, true); } };
+$('#swatches').innerHTML = COLORS.map(c => `<button class="sw${c === state.color ? ' on' : ''}" style="background:${c}" data-c="${c}" aria-label="สี ${c}"></button>`).join('');
+$('#swatches').onclick = e => { const b = e.target.closest('[data-c]'); if (!b) return; state.color = b.dataset.c; document.querySelectorAll('.sw').forEach(x => x.classList.toggle('on', x === b)); applyTheme(state.color); };
+$('#brand').oninput = e => { kit.logoState.img = null; kit.logoState.text = e.target.value || 'YOUR LOGO'; kit.drawLogo(theme); };
+$('#logoFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const img = new Image(); img.onload = () => { kit.logoState.img = img; kit.drawLogo(theme); toast('ใส่โลโก้แล้ว ✨'); }; img.src = URL.createObjectURL(f); };
+const step = d => { const ids = ORDER, i = ids.indexOf(state.sel); select(ids[((i < 0 ? 0 : i) + d + ids.length) % ids.length]); };
+$('#prev').onclick = () => step(-1); $('#next').onclick = () => step(1);
+$('#primary').onclick = () => {
+  const id = state.sel;
+  if (id === 'mybox') return state.mine.length >= MIN_ITEMS ? toast('Mockup — ระบบสั่งซื้อจะมาในเวอร์ชันจริง 🛒') : toast(`เลือกสินค้าอีก ${MIN_ITEMS - state.mine.length} ชิ้น`);
+  const p = BY[id];
+  if (p.kind === 'item') toggleMine(id);
+  else if (p.kind === 'boxset') toast('Mockup — ระบบสั่งซื้อจะมาในเวอร์ชันจริง 🛒');
+};
+$('#shot').onclick = () => { if (!hero) return; hero.renderer.render(hero.scene, hero.camera); const a = document.createElement('a'); a.href = $('#hero3d').toDataURL('image/png'); a.download = `merchy-${state.sel}.png`; a.click(); };
+const openMine = () => { if (!state.mine.length) { document.getElementById('catalog').scrollIntoView({ behavior:'smooth' }); return toast('กด + ที่สินค้าเพื่อเริ่มจัดกล่อง'); } select('mybox', true); };
+$('#viewBox').onclick = openMine; $('#openBox').onclick = openMine;
+$('#checkout').onclick = () => state.mine.length >= MIN_ITEMS ? toast('Mockup — ระบบสั่งซื้อจะมาในเวอร์ชันจริง 🛒') : toast(`ต้องมีอย่างน้อย ${MIN_ITEMS} ชิ้น`);
+
+renderGrid(); renderBar(); select('welcome');
+document.fonts?.ready.then(() => kit.drawLogo(theme));
+setTimeout(renderThumbs, 300);
+</script>
+</body>
+</html>

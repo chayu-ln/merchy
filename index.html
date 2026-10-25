@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merchy — Custom Merch Boxset ที่เห็น 3D ก่อนสั่ง</title>
+<meta name="description" content="Merchy: Boxset ของพรีเมียมใส่โลโก้ ออกแบบเองบนเว็บ เห็นเป็น 3D Virtual Product ก่อนสั่ง">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23d4ff3a%27/%3E%3Ctext x=%2716%27 y=%2723%27 font-size=%2720%27 font-weight=%27800%27 text-anchor=%27middle%27 font-family=%27sans-serif%27%3Em%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0b10; --bg2:#15131c; --card:#1b1924; --line:#2c2938;
+  --ink:#f4f2ff; --mute:#a29db5;
+  --lime:#d4ff3a; --violet:#7b5cff; --pink:#ff5ca8; --cyan:#3ae0ff;
+  --r:22px;
+  --font:'IBM Plex Sans Thai',system-ui,sans-serif;
+  --disp:'Bricolage Grotesque','IBM Plex Sans Thai',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+section{padding:96px 6vw}
+h1,h2,h3{font-family:var(--disp);line-height:1.05;letter-spacing:-.02em}
+h2{font-size:clamp(2rem,4.5vw,3.4rem)}
+em{font-style:normal;color:var(--lime)}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:24px;padding:14px 6vw;background:rgba(12,11,16,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{font-family:var(--disp);font-weight:800;font-size:1.6rem;letter-spacing:-.04em}
+.logo span,.dot{color:var(--lime)}
+.nav nav{display:flex;gap:22px;margin-left:auto;font-size:.95rem;color:var(--mute)}
+.nav nav a:hover{color:var(--ink)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border-radius:999px;background:var(--lime);color:#111;font-weight:700;transition:transform .15s,box-shadow .15s;box-shadow:0 0 0 0 rgba(212,255,58,.5)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(212,255,58,.6)}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn-ghost:hover{border-color:var(--ink);box-shadow:none}
+.btn-sm{padding:9px 18px;font-size:.9rem}
+.pill{display:inline-block;padding:6px 14px;border-radius:999px;border:1px solid var(--line);color:var(--lime);font-size:.85rem;font-weight:500;background:rgba(212,255,58,.06)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;min-height:calc(100vh - 70px);padding-top:60px}
+.hero h1{font-size:clamp(3rem,7.5vw,6.4rem);margin:22px 0;font-weight:800}
+.hero p{color:var(--mute);font-size:1.15rem;max-width:520px}
+.hero-cta{display:flex;gap:12px;margin:32px 0;flex-wrap:wrap}
+.hero-stats{display:flex;gap:36px;list-style:none}
+.hero-stats b{display:block;font-family:var(--disp);font-size:2rem}
+.hero-stats span{color:var(--mute);font-size:.85rem}
+.hero-art{position:relative;height:520px}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55}
+.b1{width:360px;height:360px;background:var(--violet);top:40px;left:40px;animation:float 9s ease-in-out infinite}
+.b2{width:280px;height:280px;background:var(--pink);bottom:20px;right:20px;animation:float 11s ease-in-out infinite reverse}
+@keyframes float{50%{transform:translate(30px,-30px)}}
+.hero-card{position:absolute;inset:60px 50px;background:linear-gradient(160deg,#211e2c,#141219);border:1px solid var(--line);border-radius:28px;display:flex;flex-direction:column;transform:rotate(-4deg);box-shadow:0 40px 80px -30px #000}
+.hc-top{display:flex;gap:6px;padding:16px}
+.hc-top span{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.hc-body{flex:1;display:grid;place-items:center;perspective:800px}
+.hc-box{position:relative;width:62%;aspect-ratio:1.4;background:var(--violet);border-radius:14px;display:grid;place-items:center;transform:rotateX(18deg) rotateY(-22deg);animation:spin 7s ease-in-out infinite;box-shadow:inset 0 -20px 40px rgba(0,0,0,.25)}
+.hc-box b{font-family:var(--disp);font-size:2rem;text-align:center;line-height:1;color:var(--lime)}
+.hc-lid{position:absolute;top:-18px;left:-4%;width:108%;height:30px;background:#9277ff;border-radius:10px}
+@keyframes spin{50%{transform:rotateX(10deg) rotateY(22deg)}}
+.hc-foot{padding:16px 22px;border-top:1px solid var(--line);color:var(--mute);font-size:.9rem}
+.sticker{position:absolute;z-index:3;padding:10px 16px;border-radius:14px;font-family:var(--disp);font-weight:800;color:#111;line-height:1.1}
+.s1{background:var(--lime);top:30px;right:10px;transform:rotate(8deg)}
+.s2{background:var(--cyan);bottom:40px;left:0;transform:rotate(-7deg)}
+
+.marquee{overflow:hidden;border-block:1px solid var(--line);background:var(--lime);color:#111}
+.marquee div{display:flex;gap:28px;width:max-content;padding:14px 0;animation:mq 28s linear infinite;font-family:var(--disp);font-weight:800;font-size:1.3rem}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+.section-head{max-width:720px;margin-bottom:44px}
+.section-head h2{margin:16px 0 10px}
+.section-head p{color:var(--mute)}
+
+/* studio */
+.studio{background:var(--bg2)}
+.studio-grid{display:grid;grid-template-columns:1fr 380px;gap:24px}
+.stage{position:relative;min-height:560px;border-radius:var(--r);overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#2a2540 0%,#121019 70%);border:1px solid var(--line)}
+#scene{width:100%;height:100%;display:block;position:absolute;inset:0;cursor:grab}
+#scene:active{cursor:grabbing}
+.stage-badge{position:absolute;top:18px;left:18px;padding:8px 14px;border-radius:999px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);font-family:var(--disp);font-weight:700}
+.stage-tools{position:absolute;bottom:18px;left:18px;display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 14px;border-radius:999px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);border:1px solid var(--line);font-size:.85rem}
+.chip.active{border-color:var(--lime);color:var(--lime)}
+.stage-fallback[hidden]{display:none}
+.stage-fallback{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:20px}
+.field>label{display:block;font-size:.85rem;color:var(--mute);margin-bottom:8px}
+.field>label b{color:var(--ink)}
+.tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.byo{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.byo[hidden]{display:none}
+.item{display:flex;flex-direction:column;align-items:flex-start;padding:8px 10px;border-radius:10px;border:1px solid var(--line);font-size:.78rem;line-height:1.25;text-align:left;transition:.15s}
+.item small{color:var(--mute)}
+.item.on{border-color:var(--lime);background:rgba(212,255,58,.1)}
+.byo-note{grid-column:1/-1;font-size:.75rem;color:var(--mute)}
+.byo-note.warn{color:var(--pink)}
+.tab{padding:10px 6px;border-radius:12px;border:1px solid var(--line);font-size:.82rem;line-height:1.25;text-align:center;transition:.15s}
+.tab small{display:block;color:var(--mute)}
+.tab.active{background:var(--lime);color:#111;border-color:var(--lime)}
+.tab.active small{color:#333}
+.upload{display:flex;align-items:center;justify-content:center;padding:14px;border:1.5px dashed var(--line);border-radius:14px;cursor:pointer;transition:.15s}
+.upload:hover{border-color:var(--lime);color:var(--lime)}
+.upload input{display:none}
+.text{width:100%;margin-top:8px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.text:focus{outline:none;border-color:var(--lime)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);transition:.15s}
+.sw.active{outline:2px solid var(--lime);outline-offset:2px}
+input[type=range]{width:100%;accent-color:var(--lime)}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);font-size:.72rem;color:var(--mute);text-align:center;margin-top:6px;line-height:1.3}
+.quote{display:grid;gap:8px;padding:16px;border-radius:16px;background:var(--bg)}
+.quote div{display:flex;justify-content:space-between;align-items:baseline}
+.quote span{color:var(--mute);font-size:.9rem}
+.quote b{font-family:var(--disp);font-size:1.2rem}
+#totalPrice{color:var(--lime);font-size:1.6rem}
+.actions{display:grid;gap:8px}
+.contents{font-size:.8rem;color:var(--mute)}
+
+/* sets */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{position:relative;padding:28px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:14px;transition:transform .2s}
+.card:hover{transform:translateY(-6px)}
+.card .tag{align-self:flex-start;padding:4px 12px;border-radius:999px;font-size:.78rem;font-weight:700;color:#111}
+.card h3{font-size:1.8rem}
+.card .price{font-family:var(--disp);font-size:2.4rem;font-weight:800}
+.card .price small{font-size:1rem;color:var(--mute);font-weight:500}
+.card ul{list-style:none;display:grid;gap:6px;color:var(--mute);font-size:.95rem}
+.card ul li::before{content:'✦ ';color:var(--lime)}
+.card .for{font-size:.85rem;color:var(--mute);border-top:1px solid var(--line);padding-top:12px;margin-top:auto}
+.card .btn{margin-top:6px}
+
+/* how */
+.how{background:var(--bg2)}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.steps li{padding:26px;border-radius:var(--r);border:1px solid var(--line);background:var(--card)}
+.steps b{font-family:var(--disp);font-size:2.6rem;color:var(--violet)}
+.steps h3{margin:10px 0 6px;font-size:1.3rem}
+.steps p{color:var(--mute);font-size:.95rem}
+
+/* ffc */
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+.metric{padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.metric span{font-size:.82rem;color:var(--mute)}
+.metric b{display:block;font-family:var(--disp);font-size:2rem;margin:4px 0}
+.metric small{font-size:.78rem;color:var(--lime)}
+.metric.hl{background:var(--lime);color:#111;border-color:var(--lime)}
+.metric.hl span,.metric.hl small{color:#333}
+.ffc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.chart-card,.canvas-card{padding:24px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
+.chart-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.legend{font-size:.8rem;color:var(--mute);display:flex;align-items:center;gap:6px}
+.lg{display:inline-block;width:14px;height:10px;border-radius:3px;margin-left:8px}
+.lg.bar{background:var(--violet)} .lg.line{height:3px;background:var(--lime)}
+#fcfChart{width:100%;height:auto}
+#fcfChart text{fill:var(--mute);font-size:12px;font-family:var(--font)}
+.canvas-card{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cbox{padding:14px;border-radius:14px;background:var(--bg);border:1px solid var(--line);font-size:.82rem}
+.cbox h4{font-family:var(--disp);font-size:.95rem;margin-bottom:6px;color:var(--lime)}
+.cbox p{color:var(--mute);line-height:1.5}
+.cbox.dec{border-color:var(--lime)}
+
+.cta{text-align:center;padding:120px 6vw;background:radial-gradient(ellipse at center,rgba(123,92,255,.35),transparent 70%)}
+.cta h2{margin-bottom:28px}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:28px 6vw;border-top:1px solid var(--line);color:var(--mute);font-size:.85rem}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,120px);padding:14px 22px;border-radius:999px;background:var(--lime);color:#111;font-weight:700;transition:transform .3s,opacity .3s;opacity:0;z-index:100;max-width:calc(100vw - 32px);text-align:center}
+.toast.show{transform:translate(-50%,0);opacity:1}
+
+@media (max-width:1000px){
+  .hero,.studio-grid,.ffc-grid{grid-template-columns:1fr}
+  .hero-art{height:380px}
+  .cards{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .nav nav{display:none}
+  .nav .btn-sm{margin-left:auto}
+}
+@media (max-width:560px){
+  section{padding:72px 16px}
+  .nav,.foot{padding-inline:16px}
+  .stage{min-height:420px}
+  .steps,.canvas-card,.cards{grid-template-columns:1fr}
+  .hero-stats{gap:20px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="#top">merchy<span>.</span></a>
+  <nav>
+    <a href="#studio">3D Studio</a>
+    <a href="#sets">Boxsets</a>
+    <a href="#how">How it works</a>
+    <a href="#ffc">FFC</a>
+    <a href="shop.html">Shop</a>
+  </nav>
+  <a class="btn btn-sm" href="#studio">ลองออกแบบ →</a>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="pill">✦ Custom merch for brands that slay</span>
+      <h1>Merch ปังๆ<br><em>เห็น 3D</em> ก่อนสั่ง</h1>
+      <p>เลือก Boxset สำเร็จรูป 3 แบบ หรือจัดเซ็ตเองจาก 8 ไอเท็ม อัปโลโก้ปุ๊บ เห็นของจริงแบบ 360° ปั๊บ ส่งลิงก์ให้หัวหน้า approve ได้เลย ไม่ต้องรอ mockup 3 วัน</p>
+      <div class="hero-cta">
+        <a class="btn" href="#studio">เปิด 3D Studio</a>
+        <a class="btn btn-ghost" href="shop.html">เลือกสินค้า (Shop)</a>
+      </div>
+      <ul class="hero-stats">
+        <li><b>25</b><span>เซ็ตขั้นต่ำ</span></li>
+        <li><b>5–7</b><span>วันได้ของ*</span></li>
+        <li><b>360°</b><span>virtual preview</span></li>
+      </ul>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="blob b1"></div><div class="blob b2"></div>
+      <div class="sticker s1">no cap,<br>it's 3D</div>
+      <div class="sticker s2">ESG ready ♻</div>
+      <div class="hero-card">
+        <div class="hc-top"><span></span><span></span><span></span></div>
+        <div class="hc-body">
+          <div class="hc-box"><div class="hc-lid"></div><b>YOUR<br>LOGO</b></div>
+        </div>
+        <div class="hc-foot">Welcome Kit · 590฿</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true"><div>
+    <span>WELCOME KIT</span><span>✦</span><span>ECO SET</span><span>✦</span><span>EXECUTIVE TECH</span><span>✦</span><span>3D VIRTUAL PRODUCT</span><span>✦</span><span>INSTANT QUOTE</span><span>✦</span>
+    <span>WELCOME KIT</span><span>✦</span><span>ECO SET</span><span>✦</span><span>EXECUTIVE TECH</span><span>✦</span><span>3D VIRTUAL PRODUCT</span><span>✦</span><span>INSTANT QUOTE</span><span>✦</span>
+  </div></div>
+
+  <!-- STUDIO -->
+  <section id="studio" class="studio">
+    <div class="section-head">
+      <span class="pill">3D Virtual Studio</span>
+      <h2>ออกแบบเอง เห็นเลย</h2>
+      <p>ลากหมุน / scroll ซูม · อัปโหลดโลโก้ (PNG พื้นใสสวยสุด) หรือพิมพ์ชื่อแบรนด์</p>
+    </div>
+    <div class="studio-grid">
+      <div class="stage">
+        <canvas id="scene"></canvas>
+        <div class="stage-badge" id="setBadge">Welcome Kit</div>
+        <div class="stage-tools">
+          <button id="btnRotate" class="chip active" title="หมุนอัตโนมัติ">⟳ Auto-spin</button>
+          <button id="btnShot" class="chip" title="บันทึกภาพ">📸 Save mockup</button>
+        </div>
+        <div class="stage-fallback" id="fallback" hidden>เบราว์เซอร์นี้ไม่รองรับ WebGL 😢</div>
+      </div>
+      <aside class="panel">
+        <div class="field">
+          <label>1 · เลือกเซ็ต</label>
+          <div class="tabs" id="setTabs"></div>
+          <div class="byo" id="byoPicker" hidden></div>
+        </div>
+        <div class="field">
+          <label>2 · ใส่โลโก้</label>
+          <label class="upload" for="logoFile">
+            <input id="logoFile" type="file" accept="image/*">
+            <span>⬆ อัปโหลดโลโก้</span>
+          </label>
+          <input id="brandText" class="text" type="text" maxlength="14" placeholder="หรือพิมพ์ชื่อแบรนด์ เช่น ACME">
+        </div>
+        <div class="field">
+          <label>3 · สีธีม</label>
+          <div class="swatches" id="swatches"></div>
+        </div>
+        <div class="field">
+          <label>4 · จำนวน <b id="qtyLabel">100</b> เซ็ต</label>
+          <input id="qty" type="range" min="25" max="500" step="5" value="100">
+          <div class="tiers"><span>25–99<br>ราคาเต็ม</span><span>100–299<br>−10%</span><span>300+<br>−15%</span></div>
+        </div>
+        <div class="quote">
+          <div><span>ราคา/เซ็ต</span><b id="unitPrice">฿531</b></div>
+          <div><span>รวม</span><b id="totalPrice">฿53,100</b></div>
+          <div><span>ได้ของภายใน</span><b id="lead">5–7 วัน</b></div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="btnOrder">สั่งเลย · มัดจำ 50%</button>
+          <button class="btn btn-ghost" id="btnShare">🔗 ส่งลิงก์ให้หัวหน้า</button>
+        </div>
+        <p class="contents" id="setContents"></p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SETS -->
+  <section id="sets" class="sets">
+    <div class="section-head">
+      <span class="pill">Boxsets</span>
+      <h2>3 เซ็ตสำเร็จรูป หรือจัดเองก็ได้</h2>
+      <p>Boxset ถูกกว่าซื้อแยก 6–11% · อยากได้แบบเฉพาะทาง จัดเองได้ขั้นต่ำ 3 ชิ้น + กล่อง</p>
+    </div>
+    <div class="cards" id="setCards"></div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how" class="how">
+    <div class="section-head">
+      <span class="pill">How it works</span>
+      <h2>4 สเต็ป ง่ายกว่าสั่งชานม</h2>
+    </div>
+    <ol class="steps">
+      <li><b>01</b><h3>เลือกเซ็ต</h3><p>Welcome / Eco / Executive หรือจัดเอง</p></li>
+      <li><b>02</b><h3>อัปโลโก้</h3><p>เห็น 3D ทันที หมุนดูได้รอบ</p></li>
+      <li><b>03</b><h3>แชร์ & approve</h3><p>ส่งลิงก์ให้หัวหน้า ไม่ต้องรอ mockup</p></li>
+      <li><b>04</b><h3>จ่ายมัดจำ รอรับของ</h3><p>สินค้ามี stock ส่งได้ใน 5–7 วัน</p></li>
+    </ol>
+  </section>
+
+  <!-- FFC -->
+  <section id="ffc" class="ffc">
+    <div class="section-head">
+      <span class="pill">For investors · Financial Feasibility Canvas</span>
+      <h2>ตัวเลขก็ปังเหมือนกัน</h2>
+      <p>ประมาณการ 5 ปี (หน่วยล้านบาท) · รายละเอียดสูตรอยู่ในไฟล์ Excel · ตัวเลขเป็นสมมติฐานเพื่อการศึกษา</p>
+    </div>
+    <div class="metrics" id="metrics"></div>
+    <div class="ffc-grid">
+      <div class="chart-card">
+        <div class="chart-head"><h3>Free Cash Flow</h3><div class="legend"><span class="lg bar"></span>FCF รายปี <span class="lg line"></span>FCF สะสม</div></div>
+        <svg id="fcfChart" viewBox="0 0 640 320" role="img" aria-label="กราฟ Free Cash Flow รายปีและสะสม"></svg>
+      </div>
+      <div class="canvas-card" id="canvasCard"></div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>พร้อมทำ merch ให้แบรนด์ปังยัง?</h2>
+    <a class="btn" href="#studio">เริ่มออกแบบเลย →</a>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>merchy<span class="dot">.</span> — MBA Finance group project (concept)</span>
+  <span>* สำหรับสินค้าที่มี stock · ตัวเลขทั้งหมดเป็นการประมาณการ</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+// ข้อมูลเซ็ตและผลวิเคราะห์การเงิน — ตรงกับไฟล์ Merchy_FFC_Financial_Model.xlsx
+const SETS = {
+  welcome: {
+    name: 'Welcome Kit', price: 590, cost: 277, tag: 'Best seller', tagColor: '#d4ff3a',
+    for: 'พนักงานใหม่ · onboarding · HR',
+    items: ['กล่องของขวัญแม่เหล็ก', 'ถุงผ้าแคนวาส', 'สมุดปก PU A5', 'ปากกาโลหะ', 'แก้วเก็บความเย็น 20oz'],
+  },
+  eco: {
+    name: 'Eco Set', price: 650, cost: 285, tag: 'ESG ready', tagColor: '#3ae0ff',
+    for: 'นโยบาย ESG · งาน CSR · อีเวนต์',
+    items: ['กล่องของขวัญแม่เหล็ก', 'ถุงผ้าแคนวาส', 'ขวดน้ำสแตนเลส 500ml', 'กล่องข้าวไม้ไผ่'],
+  },
+  exec: {
+    name: 'Executive Tech', price: 1190, cost: 512, tag: 'Premium', tagColor: '#ff5ca8',
+    for: 'ลูกค้า VIP · ผู้บริหาร · ของขวัญปีใหม่',
+    items: ['กล่องของขวัญแม่เหล็ก', 'Power bank 10,000mAh', 'แท่นชาร์จไร้สายไม้ไผ่', 'สมุดปก PU A5', 'ปากกาโลหะ'],
+  },
+};
+
+// สินค้าแยกชิ้นสำหรับจัดเซ็ตเอง (ราคารวมใส่โลโก้แล้ว)
+const ITEMS = {
+  tote: { name: 'ถุงผ้าแคนวาส', price: 99, cost: 45 },
+  notebook: { name: 'สมุดปก PU A5', price: 149, cost: 60 },
+  pen: { name: 'ปากกาโลหะ', price: 45, cost: 17 },
+  tumbler: { name: 'แก้วเก็บความเย็น 20oz', price: 219, cost: 85 },
+  bottle: { name: 'ขวดน้ำสแตนเลส 500ml', price: 189, cost: 70 },
+  lunch: { name: 'กล่องข้าวไม้ไผ่', price: 279, cost: 100 },
+  powerbank: { name: 'Power bank 10,000mAh', price: 579, cost: 235 },
+  charger: { name: 'แท่นชาร์จไร้สายไม้ไผ่', price: 349, cost: 130 },
+};
+const BOX_FEE = 149;      // กล่องแม่เหล็ก + ค่าแพ็ก (บังคับทุกเซ็ต)
+const BOX_COST = 70;
+const BYO_MIN_ITEMS = 3;
+const SET_ITEMS = { welcome: ['tote', 'notebook', 'pen', 'tumbler'], eco: ['tote', 'bottle', 'lunch'], exec: ['powerbank', 'charger', 'notebook', 'pen'] };
+
+const COLORS = [
+  ['#7b5cff', 'Violet'], ['#111114', 'Black'], ['#f2f0ea', 'Cream'],
+  ['#d4ff3a', 'Lime'], ['#ff5ca8', 'Pink'], ['#1f3a68', 'Navy'], ['#8fb59a', 'Sage'],
+];
+
+const TIERS = [
+  { min: 300, off: 0.15 }, { min: 100, off: 0.10 }, { min: 0, off: 0 },
+];
+
+// หน่วย: ล้านบาท
+const FIN = {
+  years: ['Y0', 'Y1', 'Y2', 'Y3', 'Y4', 'Y5'],
+  fcf: [-2.50, -1.54, 0.45, 1.95, 3.33, 8.40],
+  cum: [-2.50, -4.04, -3.59, -1.64, 1.68, 10.08],
+  revenue: [0, 4.97, 9.93, 14.88, 19.83, 24.78],
+  npv: 4.75, irr: 0.38, pi: 2.90, payback: 3.5, peak: 4.04, k: 0.12, capex: 2.5,
+};
+
+// Merchy 3D Virtual Studio — โมเดลสร้างด้วยโค้ด (procedural) ไม่ต้องโหลดไฟล์ 3D
+
+function createStudio(canvas) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+  camera.position.set(4.9, 3.7, 7.3);
+
+  const controls = new OrbitControls(camera, canvas);
+  controls.target.set(0, 0.6, 0);
+  controls.enableDamping = true;
+  controls.minDistance = 4; controls.maxDistance = 13;
+  controls.maxPolarAngle = Math.PI * 0.48;
+  controls.autoRotate = true; controls.autoRotateSpeed = 1.2;
+
+  // lights
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3150, 1.1));
+  const key = new THREE.DirectionalLight(0xffffff, 2.2);
+  key.position.set(4, 7, 5); key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  Object.assign(key.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4 });
+  key.shadow.bias = -0.0005;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xb9a8ff, 1.4); rim.position.set(-5, 3, -4); scene.add(rim);
+  const fill = new THREE.PointLight(0xd4ff3a, 6, 10); fill.position.set(-3, 1.5, 3); scene.add(fill);
+
+  // platform
+  const plat = new THREE.Mesh(new THREE.CylinderGeometry(2.9, 3.0, 0.18, 96),
+    new THREE.MeshStandardMaterial({ color: 0x1d1a28, roughness: 0.55, metalness: 0.1 }));
+  plat.position.y = -0.09; plat.receiveShadow = true; scene.add(plat);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(2.95, 0.015, 8, 128),
+    new THREE.MeshBasicMaterial({ color: 0xd4ff3a }));
+  ring.rotation.x = Math.PI / 2; ring.position.y = 0.0; scene.add(ring);
+
+  // ---------- logo texture (shared)
+  const logoCanvas = document.createElement('canvas');
+  logoCanvas.width = logoCanvas.height = 512;
+  const lctx = logoCanvas.getContext('2d');
+  const logoTex = new THREE.CanvasTexture(logoCanvas);
+  logoTex.colorSpace = THREE.SRGBColorSpace;
+  logoTex.anisotropy = 8;
+  const logoMat = new THREE.MeshStandardMaterial({
+    map: logoTex, transparent: true, roughness: 0.5, depthWrite: false,
+    polygonOffset: true, polygonOffsetFactor: -4,
+  });
+  let logoState = { img: null, text: 'YOUR LOGO' };
+
+  function drawLogo(theme) {
+    lctx.clearRect(0, 0, 512, 512);
+    if (logoState.img) {
+      const img = logoState.img;
+      const s = Math.min(440 / img.width, 440 / img.height);
+      const w = img.width * s, h = img.height * s;
+      lctx.drawImage(img, (512 - w) / 2, (512 - h) / 2, w, h);
+    } else {
+      const text = (logoState.text || 'YOUR LOGO').toUpperCase();
+      const words = text.split(' ').length > 1 && text.length > 8 ? text.split(' ') : [text];
+      const light = contrastInk(theme) === '#111114';
+      lctx.fillStyle = light ? '#111114' : '#d4ff3a';
+      lctx.strokeStyle = light ? '#ffffff' : '#111114';
+      lctx.lineJoin = 'round'; lctx.textAlign = 'center'; lctx.textBaseline = 'middle';
+      let size = Math.min(170, 900 / Math.max(...words.map(w => w.length)));
+      lctx.font = `800 ${size}px "Bricolage Grotesque", "IBM Plex Sans Thai", sans-serif`;
+      const lh = size * 0.95, y0 = 256 - (words.length - 1) * lh / 2;
+      lctx.lineWidth = size * 0.12;
+      words.forEach((w, i) => { lctx.strokeText(w, 256, y0 + i * lh); lctx.fillText(w, 256, y0 + i * lh); });
+      lctx.font = `700 ${size * 0.45}px sans-serif`;
+      lctx.strokeText('✦', 256, y0 - lh * 0.85); lctx.fillText('✦', 256, y0 - lh * 0.85);
+    }
+    logoTex.needsUpdate = true;
+  }
+
+  // ---------- materials
+  const themeMats = []; // materials that follow theme color
+  const themed = (opts = {}) => { const m = new THREE.MeshStandardMaterial({ roughness: 0.45, metalness: 0.15, ...opts }); themeMats.push(m); return m; };
+  const mat = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.6, ...o });
+  const canvasMat = mat(0xe9e1cf, { roughness: 0.95 });
+  const woodMat = mat(0xc89b64, { roughness: 0.75 });
+  const steelMat = mat(0xcfd3da, { metalness: 0.9, roughness: 0.25 });
+  const darkMat = mat(0x18171d, { roughness: 0.4 });
+
+  const shadowAll = (g) => g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  const plane = (w, h) => new THREE.Mesh(new THREE.PlaneGeometry(w, h), logoMat);
+  const wrapLogo = (rb, rt, h, arc = 1.3) => new THREE.Mesh(
+    new THREE.CylinderGeometry(rt, rb, h, 32, 1, true, -arc / 2, arc), logoMat);
+
+  // ---------- item builders (หน่วยประมาณ 1 = 15 ซม.)
+  const B = {
+    giftBox() {
+      const g = new THREE.Group(), m = themed();
+      const W = 2.8, D = 1.5, H = 0.55, t = 0.05;
+      const add = (geo, x, y, z) => { const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); g.add(me); };
+      add(new THREE.BoxGeometry(W, t, D), 0, t / 2, 0);
+      add(new THREE.BoxGeometry(W, H, t), 0, H / 2, D / 2 - t / 2);
+      add(new THREE.BoxGeometry(W, H, t), 0, H / 2, -D / 2 + t / 2);
+      add(new THREE.BoxGeometry(t, H, D), W / 2 - t / 2, H / 2, 0);
+      add(new THREE.BoxGeometry(t, H, D), -W / 2 + t / 2, H / 2, 0);
+      // tissue paper
+      const tissue = new THREE.Mesh(new THREE.BoxGeometry(W - 0.12, 0.04, D - 0.12), mat(0xf6f4ef, { roughness: 1 }));
+      tissue.position.y = H * 0.55; g.add(tissue);
+      // lid leaning behind
+      const lid = new THREE.Group();
+      const top = new THREE.Mesh(new THREE.BoxGeometry(W + 0.06, D + 0.06, 0.06), m);
+      lid.add(top);
+      const lg = plane(1.1, 1.1); lg.position.z = 0.035; lid.add(lg);
+      lid.position.set(0, D / 2 + 0.05, -D / 2 - 0.25); lid.rotation.x = -0.32;
+      g.add(lid);
+      // front logo
+      const fl = plane(0.5, 0.5); fl.position.set(0, H / 2, D / 2 + 0.002); g.add(fl);
+      return g;
+    },
+    tumbler() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.26, 1.25, 48), themed({ metalness: 0.35, roughness: 0.35 }));
+      body.position.y = 0.625; g.add(body);
+      const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.355, 0.35, 0.12, 48), darkMat);
+      lid.position.y = 1.31; g.add(lid);
+      const rimM = new THREE.Mesh(new THREE.CylinderGeometry(0.345, 0.345, 0.05, 48), steelMat);
+      rimM.position.y = 1.235; g.add(rimM);
+      const straw = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.6, 12), darkMat);
+      straw.position.set(0.08, 1.6, 0); straw.rotation.z = -0.12; g.add(straw);
+      // radius at y: 0.26 + y/1.25*0.08 ; logo from y .4 to .9
+      const lg = wrapLogo((0.26 + 0.4 / 1.25 * 0.08) * 1.012, (0.26 + 0.9 / 1.25 * 0.08) * 1.012, 0.5);
+      lg.position.y = 0.65; g.add(lg);
+      return g;
+    },
+    bottle() {
+      const g = new THREE.Group();
+      const pts = [[0, 0], [0.26, 0], [0.28, 0.04], [0.28, 1.05], [0.2, 1.25], [0.13, 1.33], [0.13, 1.42], [0, 1.42]].map(p => new THREE.Vector2(p[0], p[1]));
+      const body = new THREE.Mesh(new THREE.LatheGeometry(pts, 56), themed({ metalness: 0.4, roughness: 0.3 }));
+      g.add(body);
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.2, 32), woodMat);
+      cap.position.y = 1.5; g.add(cap);
+      const lg = wrapLogo(0.284, 0.284, 0.48); lg.position.y = 0.55; g.add(lg);
+      return g;
+    },
+    tote() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new RoundedBoxGeometry(1.15, 1.25, 0.08, 2, 0.03), canvasMat);
+      body.position.y = 0.625; g.add(body);
+      for (const z of [0.04, -0.04]) {
+        const h = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.025, 8, 32, Math.PI), canvasMat);
+        h.position.set(0, 1.25, z); g.add(h);
+      }
+      const lg = plane(0.7, 0.7); lg.position.set(0, 0.6, 0.042); g.add(lg);
+      return g;
+    },
+    notebook() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new RoundedBoxGeometry(0.8, 1.1, 0.13, 3, 0.03), themed({ roughness: 0.7 }));
+      g.add(body);
+      const pages = new THREE.Mesh(new THREE.BoxGeometry(0.76, 1.06, 0.1), mat(0xf7f3e8));
+      pages.position.x = 0.03; g.add(pages);
+      const band = new THREE.Mesh(new THREE.BoxGeometry(0.035, 1.112, 0.142), darkMat);
+      band.position.x = 0.3; g.add(band);
+      const lg = plane(0.42, 0.42); lg.position.set(-0.04, 0.12, 0.068); g.add(lg);
+      // stand leaning
+      g.rotation.x = -0.2; g.position.y = 0.55;
+      const w = new THREE.Group(); w.add(g); return w;
+    },
+    pen() {
+      const g = new THREE.Group();
+      const b = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.85, 20), steelMat);
+      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.1, 20), steelMat); tip.position.y = -0.475;
+      const clip = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.3, 0.02), darkMat); clip.position.set(0, 0.25, 0.045);
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.037, 0.037, 0.3, 20), themed()); cap.position.y = 0.28;
+      g.add(b, tip, clip, cap);
+      g.rotation.z = Math.PI / 2; g.position.y = 0.04;
+      const w = new THREE.Group(); w.add(g); return w;
+    },
+    lunch() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new RoundedBoxGeometry(1.0, 0.38, 0.65, 3, 0.06), mat(0xf4f1ea, { roughness: 0.5 }));
+      body.position.y = 0.19; g.add(body);
+      const lid = new THREE.Mesh(new RoundedBoxGeometry(1.02, 0.08, 0.67, 3, 0.03), woodMat);
+      lid.position.y = 0.42; g.add(lid);
+      const strap = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.5, 0.69), themed()); strap.position.set(0.3, 0.23, 0); g.add(strap);
+      const lg = plane(0.36, 0.36); lg.rotation.x = -Math.PI / 2; lg.position.set(-0.12, 0.462, 0); g.add(lg);
+      return g;
+    },
+    powerbank() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new RoundedBoxGeometry(0.5, 0.9, 0.15, 4, 0.06), themed({ roughness: 0.3, metalness: 0.2 }));
+      body.position.y = 0.45; g.add(body);
+      const led = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.015, 0.01), new THREE.MeshBasicMaterial({ color: 0x3ae0ff }));
+      led.position.set(0, 0.12, 0.077); g.add(led);
+      const lg = plane(0.34, 0.34); lg.position.set(0, 0.52, 0.077); g.add(lg);
+      g.rotation.x = -0.12;
+      return g;
+    },
+    charger() {
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.44, 0.08, 64), woodMat);
+      body.position.y = 0.04; g.add(body);
+      const pad = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.01, 64), darkMat); pad.position.y = 0.085; g.add(pad);
+      const lg = plane(0.42, 0.42); lg.rotation.x = -Math.PI / 2; lg.position.y = 0.092; g.add(lg);
+      return g;
+    },
+  };
+
+  // [builder, x, z, rotY]
+  const LAYOUTS = {
+    welcome: [['giftBox', 0, -0.95, 0], ['tote', -1.55, 0.35, 0.35], ['tumbler', 1.45, 0.45, -0.3], ['notebook', -0.3, 0.75, 0.1], ['pen', 0.55, 1.15, 0.3]],
+    eco: [['giftBox', 0, -0.95, 0], ['tote', -1.55, 0.35, 0.35], ['bottle', 1.4, 0.35, -0.3], ['lunch', 0.0, 0.9, 0.15]],
+    exec: [['giftBox', 0, -0.95, 0], ['powerbank', -1.3, 0.55, 0.3], ['charger', 1.35, 0.7, 0], ['notebook', -0.2, 0.75, 0.05], ['pen', 0.55, 1.35, -0.2]],
+  };
+
+  let current = new THREE.Group(); scene.add(current);
+  let theme = '#7b5cff';
+  let intro = 1; // animation progress
+
+  const SLOTS = [[-1.6, 0.35, 0.35], [1.45, 0.45, -0.3], [-0.3, 0.8, 0.1], [0.55, 1.25, 0.3], [-1.35, 1.45, 0.2], [1.5, 1.45, -0.2], [0.35, 1.9, 0], [-0.6, 2.0, 0.15]];
+  const TALL = ['tote', 'tumbler', 'bottle', 'powerbank', 'notebook', 'lunch', 'charger', 'pen'];
+
+  function build(layout) {
+    scene.remove(current);
+    current.traverse(o => { if (o.isMesh) o.geometry.dispose(); });
+    themeMats.length = 0;
+    current = new THREE.Group();
+    layout.forEach(([b, x, z, ry], i) => {
+      const it = B[b](); it.position.x += x; it.position.z += z; it.rotation.y += ry;
+      it.userData.delay = i * 0.08; it.userData.baseY = it.position.y;
+      shadowAll(it); current.add(it);
+    });
+    current.traverse(o => { if (o.isMesh && o.material === logoMat) o.castShadow = false; });
+    scene.add(current);
+    setTheme(theme);
+    intro = 0;
+  }
+  function setSet(key) { build(LAYOUTS[key]); }
+  function setCustom(keys) {
+    const sorted = [...keys].sort((a, b) => TALL.indexOf(a) - TALL.indexOf(b));
+    build([['giftBox', 0, -0.95, 0], ...sorted.slice(0, SLOTS.length).map((k, i) => [k, ...SLOTS[i]])]);
+    current.scale.setScalar(keys.length > 4 ? 0.85 : 1);
+  }
+
+  function setTheme(hex) {
+    theme = hex;
+    themeMats.forEach(m => m.color.set(hex));
+    drawLogo(hex);
+  }
+  function setLogoImage(img) { logoState.img = img; drawLogo(theme); }
+  function setLogoText(t) { logoState.img = null; logoState.text = t; drawLogo(theme); }
+
+  function resize() {
+    const r = canvas.getBoundingClientRect();
+    renderer.setSize(r.width, r.height, false);
+    camera.aspect = r.width / r.height;
+    camera.fov = r.width < 520 ? 45 : 35;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(canvas);
+  resize();
+
+  const clock = new THREE.Clock();
+  renderer.setAnimationLoop(() => {
+    const dt = clock.getDelta();
+    if (intro < 1.6) {
+      intro += dt * 1.6;
+      current.children.forEach(it => {
+        const p = THREE.MathUtils.clamp((intro - it.userData.delay) / 0.8, 0, 1);
+        const e = 1 - Math.pow(1 - p, 3);
+        it.scale.setScalar(0.001 + e * 0.999);
+        it.position.y = it.userData.baseY + (1 - e) * 0.6;
+      });
+    }
+    controls.update();
+    renderer.render(scene, camera);
+  });
+
+  document.fonts?.ready.then(() => drawLogo(theme));
+
+  return {
+    setSet, setCustom, setTheme, setLogoImage, setLogoText,
+    toggleRotate() { controls.autoRotate = !controls.autoRotate; return controls.autoRotate; },
+    snapshot() { renderer.render(scene, camera); return canvas.toDataURL('image/png'); },
+  };
+}
+
+function contrastInk(hex) {
+  const c = parseInt(hex.slice(1), 16), r = c >> 16, g = (c >> 8) & 255, b = c & 255;
+  return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#111114' : '#ffffff';
+}
+
+
+const $ = (s) => document.querySelector(s);
+const baht = (n) => '฿' + Math.round(n).toLocaleString('en-US');
+const state = { set: 'welcome', color: COLORS[0][0], qty: 100, text: '', byo: ['tumbler', 'notebook', 'pen', 'charger'] };
+const byoPrice = () => state.byo.reduce((a, k) => a + ITEMS[k].price, BOX_FEE);
+const looseOf = (k) => SET_ITEMS[k].reduce((a, i) => a + ITEMS[i].price, BOX_FEE);
+
+// restore from share link
+const q = new URLSearchParams(location.search);
+if (SETS[q.get('set')] || q.get('set') === 'byo') state.set = q.get('set');
+if (q.get('items')) { const it = q.get('items').split(',').filter(k => ITEMS[k]); if (it.length) state.byo = [...new Set(it)]; }
+if (q.get('color') && /^[0-9a-f]{6}$/i.test(q.get('color'))) state.color = '#' + q.get('color');
+if (q.get('qty')) state.qty = Math.min(500, Math.max(25, +q.get('qty') || 100));
+if (q.get('text')) state.text = q.get('text').slice(0, 14);
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ---------- 3D studio
+let studio = null;
+try {
+  
+  studio = createStudio($('#scene'));
+} catch (e) {
+  console.error(e); $('#fallback').hidden = false;
+}
+
+// ---------- controls
+const tabs = $('#setTabs');
+Object.entries(SETS).forEach(([k, s]) => {
+  const b = document.createElement('button');
+  b.className = 'tab'; b.dataset.k = k;
+  b.innerHTML = `${s.name}<small>${baht(s.price)}</small>`;
+  b.onclick = () => selectSet(k);
+  tabs.appendChild(b);
+});
+{ const b = document.createElement('button'); b.className = 'tab'; b.dataset.k = 'byo';
+  b.innerHTML = 'จัดเซ็ตเอง<small>เริ่ม 3 ชิ้น + กล่อง</small>'; b.onclick = () => selectSet('byo'); tabs.appendChild(b); }
+
+const picker = $('#byoPicker');
+function renderPicker() {
+  picker.innerHTML = Object.entries(ITEMS).map(([k, it]) =>
+    `<button class="item${state.byo.includes(k) ? ' on' : ''}" data-i="${k}">${it.name}<small>${baht(it.price)}</small></button>`).join('')
+    + `<div class="byo-note${state.byo.length < BYO_MIN_ITEMS ? ' warn' : ''}">${state.byo.length} ชิ้น + กล่องแม่เหล็กและแพ็ก ${baht(BOX_FEE)} · ขั้นต่ำ ${BYO_MIN_ITEMS} ชิ้น</div>`;
+  picker.querySelectorAll('.item').forEach(b => b.onclick = () => {
+    const k = b.dataset.i;
+    state.byo = state.byo.includes(k) ? state.byo.filter(x => x !== k) : [...state.byo, k];
+    renderPicker(); studio?.setCustom(state.byo); updateQuote();
+  });
+}
+
+const sw = $('#swatches');
+COLORS.forEach(([hex, name]) => {
+  const b = document.createElement('button');
+  b.className = 'sw'; b.style.background = hex; b.title = name; b.dataset.hex = hex;
+  b.setAttribute('aria-label', name);
+  b.onclick = () => selectColor(hex);
+  sw.appendChild(b);
+});
+
+function selectSet(k) {
+  state.set = k;
+  tabs.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.k === k));
+  const byo = k === 'byo';
+  picker.hidden = !byo;
+  $('#setBadge').textContent = byo ? 'จัดเซ็ตเอง' : SETS[k].name;
+  if (byo) { renderPicker(); studio?.setCustom(state.byo); }
+  else studio?.setSet(k);
+  updateQuote();
+}
+function selectColor(hex) {
+  state.color = hex;
+  sw.querySelectorAll('.sw').forEach(b => b.classList.toggle('active', b.dataset.hex === hex));
+  studio?.setTheme(hex);
+}
+
+$('#logoFile').onchange = (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  const img = new Image();
+  img.onload = () => { studio?.setLogoImage(img); toast('ใส่โลโก้แล้ว ✨ ลองหมุนดูรอบๆ'); };
+  img.src = URL.createObjectURL(f);
+};
+$('#brandText').value = state.text;
+$('#brandText').oninput = (e) => { state.text = e.target.value; studio?.setLogoText(e.target.value || 'YOUR LOGO'); };
+
+$('#qty').value = state.qty;
+$('#qty').oninput = (e) => { state.qty = +e.target.value; updateQuote(); };
+
+function updateQuote() {
+  const byo = state.set === 'byo';
+  const base = byo ? byoPrice() : SETS[state.set].price;
+  const off = TIERS.find(t => state.qty >= t.min).off;
+  const unit = base * (1 - off);
+  if (byo) $('#setContents').textContent = 'ในเซ็ต: กล่องแม่เหล็ก · ' + state.byo.map(k => ITEMS[k].name).join(' · ');
+  else { const loose = looseOf(state.set); $('#setContents').textContent = `ในเซ็ต: ${SETS[state.set].items.join(' · ')} — ถ้าจัดเองแยกชิ้น ${baht(loose)} · boxset ถูกกว่า ${Math.round((1 - base / loose) * 100)}%`; }
+  const ok = !byo || state.byo.length >= BYO_MIN_ITEMS;
+  $('#btnOrder').disabled = !ok; $('#btnOrder').style.opacity = ok ? 1 : .4;
+  $('#qtyLabel').textContent = state.qty;
+  $('#unitPrice').textContent = baht(unit) + (off ? ` (−${off * 100}%)` : '');
+  $('#totalPrice').textContent = baht(unit * state.qty);
+  const extra = byo ? 3 : 0;
+  $('#lead').textContent = state.qty <= 150 ? `${5 + extra}–${7 + extra} วัน` : state.qty <= 300 ? `${10 + extra}–${14 + extra} วัน` : '3–4 สัปดาห์';
+}
+
+$('#btnRotate').onclick = (e) => {
+  const on = studio?.toggleRotate(); e.currentTarget.classList.toggle('active', !!on);
+};
+$('#btnShot').onclick = () => {
+  if (!studio) return;
+  const a = document.createElement('a');
+  a.href = studio.snapshot(); a.download = `merchy-${state.set}-mockup.png`; a.click();
+  toast('บันทึก mockup แล้ว 📸');
+};
+$('#btnShare').onclick = async () => {
+  const u = new URL(location.href.split('?')[0].split('#')[0]);
+  u.searchParams.set('set', state.set); u.searchParams.set('color', state.color.slice(1));
+  u.searchParams.set('qty', state.qty); if (state.set === 'byo') u.searchParams.set('items', state.byo.join(',')); if (state.text) u.searchParams.set('text', state.text);
+  u.hash = 'studio';
+  try { await navigator.clipboard.writeText(u.toString()); toast('คัดลอกลิงก์แล้ว ส่งให้หัวหน้า approve ได้เลย 🔗'); }
+  catch { prompt('คัดลอกลิงก์นี้', u.toString()); }
+};
+$('#btnOrder').onclick = () => toast('Demo เท่านั้นจ้า — ระบบชำระเงินจะมาในเวอร์ชันจริง 🛒');
+
+if (state.text) studio?.setLogoText(state.text);
+selectColor(state.color);
+selectSet(state.set);
+
+// ---------- set cards
+$('#setCards').innerHTML = Object.entries(SETS).map(([k, s]) => `
+  <article class="card">
+    <span class="tag" style="background:${s.tagColor}">${s.tag} · ประหยัด ${Math.round((1 - s.price / looseOf(k)) * 100)}%</span>
+    <h3>${s.name}</h3>
+    <div class="price">${baht(s.price)}<small> /เซ็ต</small></div>
+    <ul>${s.items.map(i => `<li>${i}</li>`).join('')}</ul>
+    <div class="for">เหมาะกับ: ${s.for}</div>
+    <a class="btn btn-ghost" href="#studio" data-set="${k}">ดูแบบ 3D →</a>
+  </article>`).join('') + `
+  <article class="card">
+    <span class="tag" style="background:#ffffff">Build your own</span>
+    <h3>จัดเซ็ตเอง</h3>
+    <div class="price">${baht(BOX_FEE + 3 * 45)}+<small> /เซ็ต</small></div>
+    <ul><li>เลือก 3–8 ไอเท็มจาก 8 แบบ</li><li>ราคาแยกชิ้น ${baht(45)}–${baht(579)}</li><li>กล่องแม่เหล็ก + แพ็ก ${baht(BOX_FEE)}</li><li>ส่วนลดตามจำนวนเหมือน boxset</li></ul>
+    <div class="for">เหมาะกับ: แบรนด์ที่อยากได้เซ็ตเฉพาะตัว</div>
+    <a class="btn btn-ghost" href="#studio" data-set="byo">จัดเองเลย →</a>
+  </article>`;
+document.querySelectorAll('[data-set]').forEach(a => a.addEventListener('click', () => selectSet(a.dataset.set)));
+
+// ---------- FFC
+const fmt = (n) => (n < 0 ? `(${Math.abs(n).toFixed(2)})` : n.toFixed(2));
+$('#metrics').innerHTML = [
+  ['NPV @12%', FIN.npv.toFixed(2) + ' MB', '> 0 ✓', true],
+  ['IRR', Math.round(FIN.irr * 100) + '%', '> k 12% ✓'],
+  ['Profitability Index', FIN.pi.toFixed(2), '> 1 ✓'],
+  ['Payback', FIN.payback.toFixed(1) + ' ปี', 'ภายใน 5 ปี ✓'],
+  ['เงินทุนที่ต้องเตรียม', FIN.peak.toFixed(2) + ' MB', 'จุดติดลบสูงสุด'],
+].map(([l, v, s, hl]) => `<div class="metric${hl ? ' hl' : ''}"><span>${l}</span><b>${v}</b><small>${s}</small></div>`).join('');
+
+(function chart() {
+  const svg = $('#fcfChart'), W = 640, H = 320, P = { l: 44, r: 16, t: 20, b: 36 };
+  const all = [...FIN.fcf, ...FIN.cum], max = Math.ceil(Math.max(...all)), min = Math.floor(Math.min(...all));
+  const y = (v) => P.t + (max - v) / (max - min) * (H - P.t - P.b);
+  const step = (W - P.l - P.r) / FIN.years.length, bw = step * 0.5;
+  let out = '';
+  for (let v = min; v <= max; v += 2) {
+    out += `<line x1="${P.l}" x2="${W - P.r}" y1="${y(v)}" y2="${y(v)}" stroke="${v === 0 ? '#5a5570' : '#2c2938'}" />`;
+    out += `<text x="${P.l - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  }
+  FIN.fcf.forEach((v, i) => {
+    const x = P.l + step * i + (step - bw) / 2, y0 = y(0), y1 = y(v);
+    out += `<rect x="${x}" y="${Math.min(y0, y1)}" width="${bw}" height="${Math.max(2, Math.abs(y1 - y0))}" rx="5" fill="${v < 0 ? '#ff5ca8' : '#7b5cff'}"><title>${FIN.years[i]} FCF ${fmt(v)} MB</title></rect>`;
+    out += `<text x="${x + bw / 2}" y="${H - 12}" text-anchor="middle">${FIN.years[i]}</text>`;
+  });
+  const pts = FIN.cum.map((v, i) => `${P.l + step * i + step / 2},${y(v)}`).join(' ');
+  out += `<polyline points="${pts}" fill="none" stroke="#d4ff3a" stroke-width="3" stroke-linejoin="round"/>`;
+  FIN.cum.forEach((v, i) => { out += `<circle cx="${P.l + step * i + step / 2}" cy="${y(v)}" r="4.5" fill="#d4ff3a"><title>${FIN.years[i]} สะสม ${fmt(v)} MB</title></circle>`; });
+  svg.innerHTML = out;
+})();
+
+$('#canvasCard').innerHTML = [
+  ['1 · Investment Rationale', 'Boxset 3 เซ็ต + จัดเซ็ตเองจาก 8 ไอเท็ม ขายผ่าน E-commerce + B2B จุดขาย: 3D Virtual Product เห็นก่อนสั่ง'],
+  ['2 · Capital Investment', `เงินลงทุน ${FIN.capex.toFixed(1)} MB (เครื่องจักร 0.9 · ออฟฟิศ 0.6 · แพลตฟอร์ม 3D 1.0) + stock เริ่มต้น ~0.20 MB`],
+  ['3 · Assumptions', 'Boxset 590 / 650 / 1,190 ฿ · BYO เฉลี่ย ~911 ฿ · ราคาเฉลี่ย 786 / ต้นทุน 343 ฿ · Ads 12% · k 12%'],
+  ['6 · Decision', 'ACCEPT ✅ เก็บมัดจำ 50% · เริ่ม 9 SKU · คุม CAC ค่าโฆษณาใกล้ชิด', 'dec'],
+  ['5 · Financial Returns', `NPV ${FIN.npv} MB · IRR ${Math.round(FIN.irr * 100)}% · PI ${FIN.pi} · Payback ${FIN.payback} ปี`],
+  ['4 · Cashflow (MB)', FIN.years.map((y, i) => `${y} ${fmt(FIN.fcf[i])}`).join(' · ')],
+].map(([h, p, c]) => `<div class="cbox ${c || ''}"><h4>${h}</h4><p>${p}</p></div>`).join('');
+
+</script>
+</body>
+</html>
